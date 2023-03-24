@@ -1,21 +1,19 @@
-import Alet from "./components/DismissAlet";
-import Buttons from "./components/Buttons";
-import { useState } from "react";
+import ListGroup from "./components/ListGroup/";
+
+const items = ["Heshani", "Teshani", "Gimhani", "Pabasara", "Hiruni"];
+
+const handeleSelectItem = (item: string) => {
+	console.log(item);
+};
 
 function App() {
-	const [alet, setAlet] = useState(false);
-	const showAlet = () => {
-		setAlet(true);
-	};
-	const removeAlet = () => {
-		setAlet(false);
-	};
 	return (
 		<div>
-			{alet && <Alet removeAlet={removeAlet}>Hello Heshani!</Alet>}
-			<Buttons type="primary" onClick={showAlet}>
-				Button
-			</Buttons>
+			<ListGroup
+				items={items}
+				heading="Girls"
+				onSelectItem={handeleSelectItem}
+			/>
 		</div>
 	);
 }
