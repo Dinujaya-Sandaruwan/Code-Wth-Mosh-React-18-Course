@@ -1,4 +1,5 @@
 import ListGroup from "./components/ListGroup/";
+import "./app.css";
 
 const items = ["Heshani", "Teshani", "Gimhani", "Pabasara", "Hiruni"];
 
