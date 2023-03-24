@@ -1,0 +1,13 @@
+import Buttons from "./components/Buttons";
+
+function App() {
+	return (
+		<div>
+			<Buttons type="primary" onClick={() => console.log("Click")}>
+				Button
+			</Buttons>
+		</div>
+	);
+}
+
+export default App;
