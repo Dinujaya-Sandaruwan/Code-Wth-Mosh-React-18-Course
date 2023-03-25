@@ -1,0 +1,24 @@
+import { useState } from "react";
+import "./App.css";
+import produce from "immer";
+
+function App() {
+	const [cart, setCart] = useState({
+		discount: 1,
+		items: [
+			{ id: 1, title: "product 01", quantity: 1 },
+			{ id: 2, title: "product 02", quantity: 1 },
+		],
+	});
+
+	const handleClick = () => {
+		setCart({...cart, items: cart.items.map(item => id.item === 1 ? {...item, quantity})})
+	};
+	return (
+		<div className="App">
+			<button onClick={handleClick}> Click Me</button>
+		</div>
+	);
+}
+
+export default App;

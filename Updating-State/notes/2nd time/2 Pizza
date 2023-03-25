@@ -1,0 +1,25 @@
+import { useState } from "react";
+import "./App.css";
+import produce from "immer";
+
+function App() {
+	const [pizza, setPizza] = useState({
+		name: "Spicy Pepperoni",
+		toppings: ["Mushroom"],
+	});
+	const handleClick = () => {
+		setPizza({
+			...pizza,
+			toppings: [...pizza.toppings, "Chese"],
+		});
+	};
+
+	return (
+		<div className="App">
+			<h1>{pizza.toppings.map((topping) => " " + topping)}</h1>
+			<button onClick={handleClick}> Click Me</button>
+		</div>
+	);
+}
+
+export default App;

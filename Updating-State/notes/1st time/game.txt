@@ -1,0 +1,33 @@
+import { useState } from "react";
+import "./App.css";
+import produce from "immer";
+
+function App() {
+	const [game, setGame] = useState([
+		{
+			id: 1,
+			player: {
+				name: "John",
+			},
+		},
+	]);
+
+	const handleClick = () => {
+		setGame(
+			produce((draft) => {
+				const game = draft.find((games) => games.id === 1);
+				if (game) game.player.name = "Dinujaya";
+			})
+		);
+
+		console.log(game[0].player.name);
+	};
+	return (
+		<div className="App">
+			<h1>{game[0].player.name}</h1>
+			<button onClick={handleClick}> Click Me</button>
+		</div>
+	);
+}
+
+export default App;
