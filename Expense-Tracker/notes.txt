@@ -1,0 +1,24 @@
+Form With : Description {string} | Amount {Number} | Category {Selection}
+
+Add errors when Invalied values {onSubmit}
+
+Errors : {
+    Description : "Description should be at least 3 characters",
+    Amount: "Amount required",
+    Category: "Category is required"
+}
+
+Selection : 
+    0.
+    1. Groceries
+    2. Utilities
+    3. Entertainment
+
+Form should clear when submit
+
+Table.cols : Description | Amount | Category | [Delete Button]
+Table Should be filture with Selection {
+    All categorys | Groceries | Utilities | Entertainment
+}
+
+Total should be down in table and it should be updated (auto) {Total : $value}
