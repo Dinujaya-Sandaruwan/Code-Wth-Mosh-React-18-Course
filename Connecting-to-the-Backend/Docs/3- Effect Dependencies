@@ -1,0 +1,23 @@
+import { useEffect, useRef, useState } from "react";
+import ProductList from "./components/productList";
+
+function App() {
+	const [category, setcategory] = useState("");
+	const ref = useRef<HTMLInputElement>(null);
+
+	return (
+		<div className="container">
+			<select
+				className="form-select"
+				onChange={(event) => setcategory(event.target.value)}
+			>
+				<option value=""></option>
+				<option value="Clothing">Clothing</option>
+				<option value="Household">Household</option>
+			</select>
+			<ProductList category={category} />
+		</div>
+	);
+}
+
+export default App;

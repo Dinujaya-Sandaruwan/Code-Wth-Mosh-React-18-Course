@@ -1,0 +1,96 @@
+import { useEffect, useState } from "react";
+import { CanceledError } from "./services/apiClient";
+import userServise, { User } from "./services/userServise";
+
+function App() {
+	const [users, setUsers] = useState<User[]>([]);
+	const [err, setErr] = useState("");
+	const [isLoading, setLoading] = useState(false);
+
+	useEffect(() => {
+		setLoading(true);
+		const { request, cancel } = userServise.getAllUsers();
+		request
+			.then((res) => {
+				setUsers(res.data);
+				setLoading(false);
+			})
+			.catch((err) => {
+				if (err instanceof CanceledError) return; // need to import
+				setErr(err.message);
+				setLoading(false);
+			});
+		// .finally(() => setLoading(false)); // Doesn't Work on Strike Mode
+
+		return () => cancel();
+	}, []);
+
+	const deleteUser = (user: User) => {
+		const originalUsers = [...users];
+		setUsers(users.filter((u) => u.id !== user.id));
+		userServise.deleteUser(user.id).catch((err) => {
+			setErr(err.message);
+			setUsers(originalUsers);
+		});
+	};
+
+	const addUser = () => {
+		const originalUsers = [...users];
+		const newUser = { id: 0, name: "Heshani" };
+		setUsers([newUser, ...users]);
+
+		userServise
+			.createUser(newUser)
+			.then(({ data: saveUser }) => setUsers([saveUser, ...users]))
+			.catch((err) => {
+				setErr(err.message);
+				setUsers(originalUsers);
+			});
+	};
+
+	const updateUser = (user: User) => {
+		const originalUsers = [...users];
+		const updatedUser = { ...user, name: user.name + "!" };
+		setUsers(users.map((u) => (u.id === user.id ? updatedUser : u)));
+
+		userServise.updateUser(updatedUser).catch((err) => {
+			setErr(err.message);
+			setUsers(originalUsers);
+		});
+	};
+	return (
+		<div className="container">
+			{err && <p className="text-danger">{err}</p>}
+			{isLoading && <div className="spinner-border"></div>}
+			<button className="btn btn-primary mb-3" onClick={addUser}>
+				ADD
+			</button>
+			<ul className="list-group">
+				{users.map((user) => (
+					<li
+						key={user.id}
+						className="list-group-item d-flex justify-content-between"
+					>
+						{user.name}
+						<div>
+							<button
+								className="btn btn-outline-secondary mx-2"
+								onClick={() => updateUser(user)}
+							>
+								Update
+							</button>
+							<button
+								className="btn btn-outline-danger"
+								onClick={() => deleteUser(user)}
+							>
+								Delete
+							</button>
+						</div>
+					</li>
+				))}
+			</ul>
+		</div>
+	);
+}
+
+export default App;
