@@ -1,15 +1,41 @@
 import { useEffect, useState } from "react";
-import { CanceledError } from "./services/apiClient";
-import userServise, { User } from "./services/userServise";
-import useUsers from "./Hooks/useUsers";
+import apiClient, { CanceledError } from "./services/api.client";
 
+interface User {
+	id: number;
+	name: string;
+}
 function App() {
-	const { users, err, isLoading, setUsers, setErr } = useUsers();
+	const [users, setUsers] = useState<User[]>([]);
+	const [err, setErr] = useState("");
+	const [isLoading, setLoading] = useState(false);
+
+	useEffect(() => {
+		const controller = new AbortController();
+		setLoading(true);
+		apiClient
+			.get<User[]>("/users", {
+				signal: controller.signal,
+			})
+			.then((res) => {
+				setUsers(res.data);
+				setLoading(false);
+			})
+			.catch((err) => {
+				if (err instanceof CanceledError) return; // need to import
+				setErr(err.message);
+				setLoading(false);
+			});
+		// .finally(() => setLoading(false)); // Doesn't Work on Strike Mode
+
+		return () => controller.abort();
+	}, []);
 
 	const deleteUser = (user: User) => {
 		const originalUsers = [...users];
 		setUsers(users.filter((u) => u.id !== user.id));
-		userServise.delete(user.id).catch((err) => {
+
+		apiClient.delete("/users/" + user.id).catch((err) => {
 			setErr(err.message);
 			setUsers(originalUsers);
 		});
@@ -20,8 +46,8 @@ function App() {
 		const newUser = { id: 0, name: "Heshani" };
 		setUsers([newUser, ...users]);
 
-		userServise
-			.create(newUser)
+		apiClient
+			.post("/users/", newUser)
 			.then(({ data: saveUser }) => setUsers([saveUser, ...users]))
 			.catch((err) => {
 				setErr(err.message);
@@ -34,7 +60,7 @@ function App() {
 		const updatedUser = { ...user, name: user.name + "!" };
 		setUsers(users.map((u) => (u.id === user.id ? updatedUser : u)));
 
-		userServise.update(updatedUser).catch((err) => {
+		apiClient.patch("/users/" + user.id, updatedUser).catch((err) => {
 			setErr(err.message);
 			setUsers(originalUsers);
 		});
